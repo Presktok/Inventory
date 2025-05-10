@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>INVENTORY | Enterprise Logistics Management</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    /* Base Styles */
+    :root {
+      --primary: #2563eb;
+      --primary-dark: #1d4ed8;
+      --secondary: #0f172a;
+      --accent: #e11d48;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      background: linear-gradient(to bottom right, #f8fafc, #f1f5f9);
+      color: var(--secondary);
+      line-height: 1.6;
+    }
+
+    /* Header */
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.5rem 2rem;
+      background: rgba(255, 255, 255, 0.95);
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    }
+
+    .logo {
+      font-size: 1.75rem;
+      font-weight: 700;
+      background: linear-gradient(to right, var(--primary), var(--primary-dark));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 1.5rem;
+      align-items: center;
+    }
+
+    .nav-links a {
+      color: var(--secondary);
+      font-weight: 500;
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      transition: all 0.2s ease;
+    }
+
+    .nav-links a.login:hover {
+      color: var(--primary);
+    }
+
+    .nav-links a.signup {
+      background: var(--primary);
+      color: white;
+      box-shadow: 0 2px 4px rgba(37, 99, 235, 0.2);
+    }
+
+    .nav-links a.signup:hover {
+      background: var(--primary-dark);
+      transform: translateY(-1px);
+    }
+
+    /* Hero Section */
+    .hero {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4rem;
+      align-items: center;
+      padding: 6rem 2rem;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    .hero-text h1 {
+      font-size: 3rem;
+      font-weight: 700;
+      line-height: 1.2;
+      margin-bottom: 1.5rem;
+      color: var(--secondary);
+    }
+
+    .hero-text p {
+      font-size: 1.125rem;
+      color: #64748b;
+      margin-bottom: 2rem;
+    }
+
+    .hero-btn {
+      display: inline-flex;
+      align-items: center;
+      padding: 1rem 2rem;
+      background: var(--primary);
+      color: white;
+      border-radius: 8px;
+      font-weight: 600;
+      transition: all 0.2s ease;
+      box-shadow: 0 4px 6px rgba(37, 99, 235, 0.1);
+    }
+
+    .hero-btn:hover {
+      background: var(--primary-dark);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 12px rgba(37, 99, 235, 0.15);
+    }
+
+    .hero-image {
+      position: relative;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+    }
+
+    .hero-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    /* Features Grid */
+    .features {
+      padding: 6rem 2rem;
+      background: white;
+    }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .feature-card {
+      padding: 2rem;
+      border-radius: 12px;
+      background: white;
+      border: 1px solid #e2e8f0;
+      transition: transform 0.2s ease;
+    }
+
+    .feature-card:hover {
+      transform: translateY(-5px);
+    }
+
+    .feature-icon {
+      width: 48px;
+      height: 48px;
+      background: var(--primary);
+      border-radius: 8px;
+      margin-bottom: 1.5rem;
+    }
+
+    .feature-card h3 {
+      font-size: 1.25rem;
+      margin-bottom: 1rem;
+      color: var(--secondary);
+    }
+
+    .feature-card p {
+      color: #64748b;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 1024px) {
+      .hero {
+        grid-template-columns: 1fr;
+        text-align: center;
+        padding: 4rem 2rem;
+      }
+
+      .features-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .hero-text h1 {
+        font-size: 2.25rem;
+      }
+
+      .nav-links {
+        gap: 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <a href="#" class="logo">Inventory</a>
+    <nav class="nav-links">
+      <a href="{{ url_for('web.login') }}" class="login">Sign In</a>
+      <a href="{{ url_for('web.signup') }}" class="signup">Get Started</a>
+    </nav>
+  </header>
+
+  <section class="hero">
+    <div class="hero-text">
+      <h1>Enterprise-Grade Logistics Management</h1>
+      <p>Transform your supply chain with AI-powered inventory optimization, real-time tracking, and seamless integration across your operations. Trusted by leading companies across India.</p>
+ 
+    </div>
+    <div class="hero-image">
+      <img src="{{ url_for('static', filename='images/trucks.jpg') }}" alt="Platform interface">
+    </div>
+  </section>
+
+  <section class="features">
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon"></div>
+        <h3>Real-Time Analytics</h3>
+        <p>Comprehensive dashboard with live inventory tracking and predictive insights.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon"></div>
+        <h3>Automated Workflows</h3>
+        <p>Smart order routing and intelligent replenishment systems.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon"></div>
+        <h3>Multi-Channel Integration</h3>
+        <p>Unified platform connecting warehouses, suppliers, and sales channels.</p>
+      </div>
+    </div>
+  </section>
+</body>
+</html>
