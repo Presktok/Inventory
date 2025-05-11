@@ -9,3 +9,4 @@ def init_db(app):
     except Exception as e:
         print(f"MongoDB connection error: {e}")
         raise e
+    
