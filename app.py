@@ -9,7 +9,7 @@ app = Flask(__name__,
 
 app.config.from_object('backend.config.config.DevelopmentConfig')
 
-app.secret_key = 'Mera_Namm_Prince_Kumar_Nikita'
+app.secret_key = 'Mera_Namm_Prince_Kumar'
 
 
 # Initialize MongoDB
