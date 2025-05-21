@@ -1,32 +1,46 @@
-from flask import Blueprint, render_template, request, redirect, url_for,session,current_app
+import os
+from flask import Blueprint, render_template, request, redirect, url_for, flash, session, current_app
+from werkzeug.security import generate_password_hash, check_password_hash
 
 web_bp = Blueprint('web', __name__)
 
 @web_bp.route('/')
-def index():
-    return render_template('index.html')  # Show your homepage first
+def dashboard():
+    return render_template('dashboard.html')  # Show your homepage first
 
 @web_bp.route('/signup', methods=['GET', 'POST'])
 def signup():
     if request.method == 'POST':
-        name = request.form.get('name')
+        first_name = request.form.get('firstName')
+        last_name = request.form.get('lastName')
         email = request.form.get('email')
         password = request.form.get('password')
 
+        if not all([first_name, last_name, email, password]):
+            flash("Missing required fields", "danger")
+            return redirect(url_for('web.signup'))
 
-        db = current_app.db  # Get the database attached to app
+        full_name = f"{first_name} {last_name}"
+
+        db = current_app.db
         users_collection = db.users
 
-        # Optional: Check if user already exists
+        # Check if the user already exists
         if users_collection.find_one({"email": email}):
-            return "User already exists", 400
+            flash("User  already exists", "danger")
+            return redirect(url_for('web.signup'))
 
+        # Hash the password before storing
+        hashed_password = generate_password_hash(password)
+
+        # Insert the new user
         users_collection.insert_one({
-            "name": name,
+            "name": full_name,
             "email": email,
-            "password": password
+            "password": hashed_password
         })
 
+        flash("Signup successful! You can now log in.", "success")
         return redirect(url_for('web.login'))  # Redirect after signup
 
     return render_template('signup.html')
@@ -34,50 +48,52 @@ def signup():
 @web_bp.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
-        role = request.form.get('role')  # 'admin' or 'customer'
+        email = request.form.get('email')
+        password = request.form.get('password')
+
         db = current_app.db
+        users_collection = db.users  # Make sure this collection is correct
 
         try:
-            if role == 'customer':
-                email = request.form.get('email')
-                password = request.form.get('password')
-                user = db.users.find_one({"email": email})
-                
-                if user and user.get("password") == password:
-                    session['user_id'] = str(user['_id'])
-                    session['user_name'] = user.get('name')
-                    session['role'] = 'customer'
-                    return redirect(url_for('web.dashboard'))
+            user = users_collection.find_one({"email": email})
+
+            if user:
+                if check_password_hash(user.get('password'), password):
+                    session['user'] = {
+                        "name": user.get("name"),
+                        "email": user.get("email")
+                    }
+                    print("[DEBUG] Login successful.")
+                    return redirect(url_for('web.index_page'))
                 else:
-                    return render_template('login.html', error="Invalid customer credentials")
-
-            elif role == 'admin':
-                employee_id = request.form.get('employee_id')
-                password = request.form.get('password')
-                admin = db.admin.find_one({"employee_id": employee_id})  # <- Separate collection
-
-                if admin and admin.get("password") == password:
-                    session['admin_id'] = str(admin['_id'])
-                    session['admin_name'] = admin.get('name')
-                    session['role'] = 'admin'
-                    return redirect(url_for('web.dashboard'))
-                else:
-                    return render_template('login.html', error="Invalid admin credentials")
-
+                    flash("Invalid credentials. Please try again.", "danger")
+                    print("[DEBUG] Incorrect password.")
             else:
-                return render_template('login.html', error="Unknown role selected")
+                flash("Invalid credentials. Please try again.", "danger")
+                print("[DEBUG] No user found with that email.")
 
         except Exception as e:
-            print("Login error:", str(e))
-            return f"Internal Server Error: {e}", 500
+            flash("Something went wrong. Please try again.", "danger")
+            print(f"[ERROR] Exception during login: {e}")
 
     return render_template('login.html')
 
 
+@web_bp.route('/index')
+def index_page():  # Renamed to avoid conflict
+    return render_template('index.html')
 
-@web_bp.route('/dashboard')
-def dashboard():
-    return render_template('dashboard.html')
+@web_bp.route('/inventory')
+def inventory():
+    return render_template('inventory.html')
+
+@web_bp.route('/order')
+def orders():
+    return render_template('order.html')
+
+@web_bp.route('/routes')
+def routes():
+    return render_template('routes.html')
 
 @web_bp.route('/prince')
 def prince():

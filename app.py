@@ -2,6 +2,11 @@ from flask import Flask, render_template
 from backend.config.database import init_db
 from backend.routes.web import web_bp
 from backend.routes.api import api_bp
+from flask import Flask
+from flask_cors import CORS
+
+app = Flask(__name__)
+CORS(app)  # Enable CORS for all routes
 
 app = Flask(__name__,
             template_folder="frontend/templates",
